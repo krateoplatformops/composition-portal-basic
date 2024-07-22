@@ -1,4 +1,4 @@
-kind: ConfigMap
+pekind: ConfigMap
 apiVersion: v1
 metadata:
   name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events-row-column-1-panel-eventlist
@@ -32,7 +32,7 @@ spec:
       events: ${ .getEvents.items }
   api:
   - name: getEvents
-    path: "/events/aeb3555f-c9c2-4e0d-8d80-658e29cf04a3?limit=10" ---> rendere dinamico
+    path: "/events/aeb3555f-c9c2-4e0d-8d80-658e29cf04a3?limit=10"
     verb: GET
     endpointRef:
       name: eventsse-internal-endpoint
