@@ -1,0 +1,41 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events-row-column-1-panel-eventlist
+  namespace: {{ .Release.Namespace }}
+data:
+  asGrid: "false"
+  sseEndpoint: http://172.205.73.51:30080/notifications/
+  sseTopic: aeb3555f-c9c2-4e0d-8d80-658e29cf04a3
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: eventsse-internal-endpoint
+  namespace: {{ .Release.Namespace }}
+stringData:
+  server-url: http://eventsse-internal.krateo-system.svc:30080
+---
+apiVersion: templates.krateo.io/v1alpha1
+kind: Widget
+metadata:
+  name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events-row-column-1-panel-eventlist
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: eventlist
+  propsRef:
+    name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events-row-column-1-panel-eventlist
+    namespace: {{ .Release.Namespace }}
+  app:
+    template:
+      events: ${ .getEvents.items }
+  api:
+  - name: getEvents
+    path: "/events/aeb3555f-c9c2-4e0d-8d80-658e29cf04a3?limit=10" ---> rendere dinamico
+    verb: GET
+    endpointRef:
+      name: eventsse-internal-endpoint
+      namespace: {{ .Release.Namespace }}
+    headers:
+    - 'Accept: application/json'

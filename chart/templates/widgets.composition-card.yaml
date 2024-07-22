@@ -1,0 +1,51 @@
+# qui si dovrebbe rappresentare la card di questa istanza di composition
+apiVersion: templates.krateo.io/v1alpha1
+kind: Widget
+metadata:
+  name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: card
+  actions:
+  - template:
+      apiVersion: templates.krateo.io/v1alpha1
+      resource: collections
+      name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tablist
+      namespace: {{ .Release.Namespace }}
+  app:
+    # iterator: .fireworksapps.items
+    template:
+      title: ${ .metadata.name }
+      content: ${ "kind: " + .kind + ", apiVersion: " + .apiVersion }
+  # api:
+  # - name: fireworksapps
+  #   path: "/apis/composition.krateo.io/{{ .Chart.Version }}/namespaces/{{ .Release.Namespace }}/{{ .Chart.Name }}"
+  #   verb: GET
+  #   headers:
+  #   - 'Accept: application/json'
+# ---
+# apiVersion: templates.krateo.io/v1alpha1
+# kind: Widget
+# metadata:
+#   name: composition-fireworksapp-tgz
+#   namespace: {{ .Release.Namespace }}
+# spec:
+#   type: card
+#   actions:
+#   - iterator: .fireworksapps.items
+#     template:
+#       apiVersion: templates.krateo.io/v1alpha1
+#       resource: collections
+#       name: composition-{{ .Release.Namespace }}-{{ .Release.Namespace }}-tablist
+#       namespace: {{ .Release.Namespace }}
+#   app:
+#     iterator: .fireworksapps.items
+#     template:
+#       title: ${ .metadata.name }
+#       content: ${ .spec.containers[0] | .image }
+#   api:
+#   - name: fireworksapps
+#     path: "/apis/composition.krateo.io/{{ .Chart.Version }}/namespaces/{{ .Release.Namespace }}/{{ .Chart.Name }}"
+#     verb: GET
+#     headers:
+#     - 'Accept: application/json'

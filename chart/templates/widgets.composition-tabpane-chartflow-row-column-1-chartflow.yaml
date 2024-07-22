@@ -1,0 +1,30 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-status-row-column-1-chartflow
+  namespace: {{ .Release.Namespace }}
+data:
+  label: Flow Chart
+---
+apiVersion: templates.krateo.io/v1alpha1
+kind: Widget
+metadata:
+  annotations:
+    "krateo.io/verbose-api": "true"
+  name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-status-row-column-1-chartflow
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: chartflow
+  propsRef:
+    name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-status-row-column-1-chartflow
+    namespace: {{ .Release.Namespace }}
+  app:
+    template:
+      data: ${ .resourceTree.status }
+  api:
+  - name: resourceTree
+    path: "/apis/templates.krateo.io/v1alpha1/namespaces/{{ .Release.Namespace }}/resourcetrees/{{ .Release.Name }}-{{ .Release.Namespace }}"
+    verb: GET
+    headers:
+    - 'Accept: application/json'
+---

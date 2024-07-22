@@ -1,0 +1,10 @@
+apiVersion: templates.krateo.io/v1alpha1
+kind: Widget
+metadata:
+  name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-overview-row-column-1-panel-paragraph
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: paragraph
+  app:
+    template:
+      text: {{ .Values.overview.text }}
