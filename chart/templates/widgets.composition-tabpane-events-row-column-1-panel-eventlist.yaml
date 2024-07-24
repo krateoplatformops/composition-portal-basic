@@ -1,0 +1,73 @@
+apiVersion: krateo.io/v1alpha1
+kind: Patch
+metadata:
+  name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events-row-column-1-panel-eventlist
+spec:
+  from:
+    objectReference:
+      apiVersion: templates.krateo.io/v1alpha1
+      kind: Widget
+      name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events-row-column-1-panel-eventlist
+      namespace: {{ .Release.Namespace }}
+    fieldPath: metadata.labels
+  to:
+    objectReference:
+      apiVersion: templates.krateo.io/v1alpha1
+      kind: Widget
+      name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events-row-column-1-panel-eventlist
+      namespace: {{ .Release.Namespace }}
+    fieldPath: spec.api[0].path
+    transform: ${ "/events/" + .krateo.io/composition-id + "?limit=50" }
+---
+apiVersion: krateo.io/v1alpha1
+kind: Patch
+metadata:
+  name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events-row-column-1-panel-eventlist-configmap
+spec:
+  from:
+    objectReference:
+      apiVersion: templates.krateo.io/v1alpha1
+      kind: Widget
+      name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events-row-column-1-panel-eventlist
+      namespace: {{ .Release.Namespace }}
+    fieldPath: metadata.labels
+  to:
+    objectReference:
+      apiVersion: v1
+      kind: Configmap
+      name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events-row-column-1-panel-eventlist
+      namespace: {{ .Release.Namespace }}
+    fieldPath: data.sseTopic
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events-row-column-1-panel-eventlist
+  namespace: {{ .Release.Namespace }}
+data:
+  asGrid: "false"
+  sseEndpoint: /notifications/
+  sseTopic: compositionId
+---
+apiVersion: templates.krateo.io/v1alpha1
+kind: Widget
+metadata:
+  name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events-row-column-1-panel-eventlist
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: eventlist
+  propsRef:
+    name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events-row-column-1-panel-eventlist
+    namespace: {{ .Release.Namespace }}
+  app:
+    template:
+      events: ${ .getEvents.items }
+  api:
+  - name: getEvents
+    path: "/events?limit=10"
+    verb: GET
+    endpointRef:
+      name: eventsse-internal-endpoint
+      namespace: {{ .Release.Namespace }}
+    headers:
+    - 'Accept: application/json'
