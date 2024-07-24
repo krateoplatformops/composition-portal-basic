@@ -34,7 +34,7 @@ spec:
   to:
     objectReference:
       apiVersion: v1
-      kind: Configmap
+      kind: ConfigMap
       name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events-row-column-1-panel-eventlist
       namespace: {{ .Release.Namespace }}
     fieldPath: data.sseTopic
