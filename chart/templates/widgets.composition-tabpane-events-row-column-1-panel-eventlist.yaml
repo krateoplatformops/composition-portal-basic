@@ -12,7 +12,6 @@ spec:
     fieldPath: metadata.labels
   to:
     objectReference:
-    objectReference:
       apiVersion: templates.krateo.io/v1alpha1
       kind: Widget
       name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events-row-column-1-panel-eventlist
@@ -33,7 +32,6 @@ spec:
       namespace: {{ .Release.Namespace }}
     fieldPath: metadata.labels
   to:
-    objectReference:
     objectReference:
       apiVersion: v1
       kind: Configmap
