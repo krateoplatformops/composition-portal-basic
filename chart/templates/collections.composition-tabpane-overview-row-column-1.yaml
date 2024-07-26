@@ -4,7 +4,7 @@ metadata:
   name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-overview-row-column-1
   namespace: {{ .Release.Namespace }}
 data:
-  width: "6"
+  width: "24"
 ---
 apiVersion: templates.krateo.io/v1alpha1
 kind: Collection
