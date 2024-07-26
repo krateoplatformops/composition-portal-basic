@@ -23,7 +23,7 @@ spec:
       data: ${ .resourceTree.status }
   api:
   - name: resourceTree
-    path: "/apis/templates.krateo.io/v1alpha1/namespaces/{{ .Release.Namespace }}/resourcetrees/{{ .Release.Name }}-{{ .Release.Namespace }}"
+    path: "/apis/templates.krateo.io/v1alpha1/namespaces/{{ .Release.Namespace }}/resourcetrees/composition-resourcetree-{{ .Release.Name }}-{{ .Release.Namespace }}"
     verb: GET
     headers:
     - 'Accept: application/json'

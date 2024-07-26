@@ -1,0 +1,248 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: composition-resourcetree-sa
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: composition-cluster-viewer
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch
+- nonResourceURLs:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: composition-resourcetree-rolebinding
+subjects:
+  - kind: ServiceAccount
+    name: composition-resourcetree-sa
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: composition-cluster-viewer
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: composition-resourcetree-creator
+  namespace: {{ .Release.Namespace }}
+rules:
+- apiGroups: ["templates.krateo.io"]
+  resources: ["resourcetrees"]
+  verbs: ["create","patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: composition-resourcetree-creator-binding
+  namespace: {{ .Release.Namespace }}
+subjects:
+- kind: ServiceAccount
+  name: composition-resourcetree-sa
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: composition-resourcetree-creator
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: composition-resourcetree-{{ .Release.Name }}-{{ .Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
+data:
+  LABEL_VALUE: LABEL_VALUE
+---
+apiVersion: krateo.io/v1alpha1
+kind: Patch
+metadata:
+  name: composition-resourcetree-{{ .Release.Name }}-{{ .Release.Namespace }}
+spec:
+  from:
+    objectReference:
+      apiVersion: v1
+      kind: ConfigMap
+      name: composition-resourcetree-{{ .Release.Name }}-{{ .Release.Namespace }}
+      namespace: {{ .Release.Namespace }}
+    fieldPath: metadata
+  to:
+    objectReference:
+      apiVersion: v1
+      kind: ConfigMap
+      name: composition-resourcetree-{{ .Release.Name }}-{{ .Release.Namespace }}
+      namespace: {{ .Release.Namespace }}
+    fieldPath: data.LABEL_VALUE
+    transform: ${ .labels["krateo.io/composition-id"] }
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: composition-resourcetree-{{ .Release.Name }}-{{ .Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  template:
+    spec:
+      ttlSecondsAfterFinished: 0
+      serviceAccountName: resourcetree-sa
+      containers:
+        - name: kubectl
+          image: bitnami/kubectl:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              #!/bin/sh
+
+              if [ "$LABEL_VALUE" = "LABEL_VALUE" ]; then
+                debug "LABEL_VALUE not yet patched"
+                exit 1
+              fi
+
+              # Define the label key and value from environment variables
+              LABEL_KEY="krateo.io/composition-id"
+              LABEL_VALUE="${LABEL_VALUE}"
+              OUTPUT_FILE="/tmp/resources.json"
+              RESOURCETREE_FILE="/tmp/resourcetree.yaml"
+              DEBUG=true
+
+              # Function to print debug messages
+              debug() {
+                if [ "$DEBUG" = true ]; then
+                  echo "$@"
+                fi
+              }
+
+              # Get the composition resource with the matching UID
+              COMPOSITION=$(kubectl get compositions --all-namespaces -o json | jq --arg UID "$LABEL_VALUE" '.items[] | select(.metadata.uid==$UID)')
+              debug "Composition is $COMPOSITION"
+
+              COMPOSITION_KIND=$(echo $COMPOSITION | jq -r '. | .kind')
+              COMPOSITION_GROUP=$(echo $COMPOSITION | jq -r '. | .apiVersion | split("/")[0]')
+              debug "Composition Kind is $COMPOSITION_KIND"
+              debug "Composition group is $COMPOSITION_GROUP"
+
+              # Get all API resources (both namespaced and non-namespaced)
+              API_RESOURCES=$(kubectl api-resources)
+
+              # Get the CRD names first
+              CRD_NAMES=$(kubectl get crds -o jsonpath="{.items[*].metadata.name}")
+
+              for CRD_NAME in $CRD_NAMES; do
+                # Get the kind and group for each CRD
+                CRD_KIND=$(kubectl get crd $CRD_NAME -o jsonpath='{.spec.names.kind}')
+                CRD_GROUP=$(kubectl get crd $CRD_NAME -o jsonpath='{.spec.group}')
+
+                debug "CRD_KIND=$CRD_KIND, COMPOSITION_KIND=$COMPOSITION_KIND, CRD_GROUP=$CRD_GROUP, COMPOSITION_GROUP=$COMPOSITION_GROUP"
+
+                # Check if the kind and group match the input
+                if [ "$CRD_KIND" = "$COMPOSITION_KIND" ] && [ "$CRD_GROUP" = "$COMPOSITION_GROUP" ]; then
+                  COMPOSITION_RESOURCE=$(kubectl get crd $CRD_NAME -o jsonpath='{.spec.names.plural}')
+                  debug "The plural value for Kind: $KIND and Group: $GROUP is: $COMPOSITION_RESOURCE"
+                  break
+                fi
+              done
+
+              # Extract parentRefs information
+              PARENT_REFS=$(echo $COMPOSITION | jq --arg resource "$COMPOSITION_RESOURCE" '. | {apiVersion: .apiVersion, resource: $resource, name: .metadata.name, namespace: .metadata.namespace}')
+              debug "ParentRefs is $PARENT_REFS"
+
+              # Loop through each resource type and get the items with the specified label
+              echo "$API_RESOURCES" | while read -r line; do
+                # Skip the header line
+                if echo "$line" | grep -q "NAME"; then
+                  continue
+                fi
+
+                debug "line: $line"
+
+                # Count the number of fields in the line
+                NUM_FIELDS=$(echo "$line" | awk '{print NF}')
+
+                # Extract the fields based on the number of fields
+                if [ "$NUM_FIELDS" -eq 5 ]; then
+                  RESOURCE=$(echo "$line" | awk '{print $1}')
+                  KIND=$(echo "$line" | awk '{print $5}')
+                  NAMESPACED=$(echo "$line" | awk '{print $4}')
+                  APIVERSION=$(echo "$line" | awk '{print $3}')
+                elif [ "$NUM_FIELDS" -eq 4 ]; then
+                  RESOURCE=$(echo "$line" | awk '{print $1}')
+                  KIND=$(echo "$line" | awk '{print $4}')
+                  NAMESPACED=$(echo "$line" | awk '{print $3}')
+                  APIVERSION=$(echo "$line" | awk '{print $2}')
+                else
+                  debug "Unexpected number of fields ($NUM_FIELDS) in line: $line"
+                  continue
+                fi
+
+                debug "RESOURCE: $RESOURCE, KIND: $KIND, APIVERSION: $APIVERSION, NAMESPACED: $NAMESPACED"
+
+                debug "Fetching resources for $RESOURCE..."
+                if [ "$NAMESPACED" = "true" ]; then
+                  # Namespaced resources
+                  debug "Namespaced: kubectl get "$RESOURCE" --all-namespaces -o json --selector="${LABEL_KEY}=${LABEL_VALUE}""
+
+                  if [ "$APIVERSION" != *"templates.krateo.io"* ]; then
+                    kubectl get "$RESOURCE" --all-namespaces -o json --selector="${LABEL_KEY}=${LABEL_VALUE}" | \
+                    jq --arg resource "$RESOURCE" --argjson parentRefs "$PARENT_REFS" '
+                      .items[] |
+                      select(.metadata.name | test("composition") | not) |
+                      {apiVersion: .apiVersion, resource: $resource, name: .metadata.name, namespace: .metadata.namespace, parentRefs: [$parentRefs]}
+                    ' >> $OUTPUT_FILE
+                  fi
+                else
+                  # Non-namespaced resources
+                  debug "Clustered: kubectl get "$RESOURCE" -o json --selector="${LABEL_KEY}=${LABEL_VALUE}""
+
+                  kubectl get "$RESOURCE" -o json --selector="${LABEL_KEY}=${LABEL_VALUE}" | \
+                  jq --arg resource "$RESOURCE" --argjson parentRefs "$PARENT_REFS" '
+                    .items[] |
+                    select(.metadata.name | test("composition") | not) |
+                    {apiVersion: .apiVersion, resource: $resource, name: .metadata.name, parentRefs: [$parentRefs]}
+                  ' >> $OUTPUT_FILE
+                fi
+              done
+
+              debug "Combine the JSON objects into a single array"
+
+              # Combine the JSON objects into a single array
+              jq -s . $OUTPUT_FILE >> ${OUTPUT_FILE}.tmp && mv ${OUTPUT_FILE}.tmp $OUTPUT_FILE
+
+              debug "Create the ResourceTree manifest"
+
+              # Create the ResourceTree manifest
+              cat <<EOF > $RESOURCETREE_FILE
+              apiVersion: templates.krateo.io/v1alpha1
+              kind: ResourceTree
+              metadata:
+                name: composition-resourcetree-{{ .Release.Name }}-{{ .Release.Namespace }}
+                namespace: {{ .Release.Namespace }}
+              spec:
+                tree:
+              $(jq -r '.[] | "  - apiVersion: \(.apiVersion)\n    resource: \(.resource)\n    name: \(.name)\n\(. | if has("namespace") then "    namespace: \(.namespace)\n" else "" end)    parentRefs:\n" + (.parentRefs[] | "    - apiVersion: \(.apiVersion)\n      resource: \(.resource)\n      name: \(.name)\n      namespace: \(.namespace)\n")' $OUTPUT_FILE)
+              EOF
+
+              # Print the final manifest for debugging
+              debug "ResourceTree manifest: $RESOURCETREE_FILE"
+
+              # Apply the ResourceTree object
+              kubectl apply -f $RESOURCETREE_FILE
+          envFrom:
+            - configMapRef:
+                name: composition-resourcetree-{{ .Release.Name }}-{{ .Release.Namespace }}
+      restartPolicy: OnFailure
+  backoffLimit: 10

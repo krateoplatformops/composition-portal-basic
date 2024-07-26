@@ -8,9 +8,5 @@ spec:
   widgetsRefs:
   - apiVersion: templates.krateo.io/v1alpha1
     resource: widgets
-    name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-overview-row-column-1-panel-button
-    namespace: {{ .Release.Namespace }}
-  - apiVersion: templates.krateo.io/v1alpha1
-    resource: widgets
     name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-overview-row-column-1-panel-paragraph
     namespace: {{ .Release.Namespace }}
