@@ -8,6 +8,6 @@ spec:
   widgetsRefs:
   - apiVersion: templates.krateo.io/v1alpha1
     resource: collections
-    name: composition-{{ .Release.Names }}-{{ .Release.Namespace }}-tabpane-status-row-column-1
+    name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-status-row-column-1
     namespace: {{ .Release.Namespace }}
 ---
