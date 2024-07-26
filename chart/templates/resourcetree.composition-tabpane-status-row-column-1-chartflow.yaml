@@ -151,8 +151,9 @@ spec:
 
                 # Check if the kind and group match the input
                 if [ "$CRD_KIND" = "$COMPOSITION_KIND" ] && [ "$CRD_GROUP" = "$COMPOSITION_GROUP" ]; then
+
                   COMPOSITION_RESOURCE=$(kubectl get crd $CRD_NAME -o jsonpath='{.spec.names.plural}')
-                  debug "The plural value for Kind: $KIND and Group: $GROUP is: $COMPOSITION_RESOURCE"
+                  debug "The plural value for Kind: $CRD_KIND and Group: $CRD_GROUP is: $COMPOSITION_RESOURCE"
                   break
                 fi
               done
@@ -189,38 +190,95 @@ spec:
                   continue
                 fi
 
-                debug "RESOURCE: $RESOURCE, KIND: $KIND, APIVERSION: $APIVERSION, NAMESPACED: $NAMESPACED"
+                # Check if the variable contains a '/'
+                if echo "$APIVERSION" | grep -q "/"; then
+                  # Strip all characters from the '/' to the end of the string
+                  APIGROUP="${APIVERSION%%/*}"
+                else
+                  APIGROUP=""
+                fi
+
+                debug "RESOURCE: $RESOURCE, KIND: $KIND, APIVERSION: $APIVERSION, APIGROUP: $APIGROUP, NAMESPACED: $NAMESPACED"
 
                 debug "Fetching resources for $RESOURCE..."
-                if [ "$NAMESPACED" = "true" ]; then
-                  # Namespaced resources
-                  debug "Namespaced: kubectl get "$RESOURCE" --all-namespaces -o json --selector="${LABEL_KEY}=${LABEL_VALUE}""
 
-                  if [ "$APIVERSION" != *"templates.krateo.io"* ]; then
-                    kubectl get "$RESOURCE" --all-namespaces -o json --selector="${LABEL_KEY}=${LABEL_VALUE}" | \
-                    jq --arg resource "$RESOURCE" --argjson parentRefs "$PARENT_REFS" '
-                      .items[] |
-                      select(.metadata.name | test("composition") | not) |
-                      {apiVersion: .apiVersion, resource: $resource, name: .metadata.name, namespace: .metadata.namespace, parentRefs: [$parentRefs]}
-                    ' >> $OUTPUT_FILE
+                if [ "$APIVERSION" != *"templates.krateo.io"* ]; then
+
+                  if [ "$NAMESPACED" = "true" ]; then
+
+                    if [ -n "$APIGROUP" ]; then
+
+                      debug "Namespaced: kubectl get $RESOURCE.$APIGROUP --all-namespaces -o json --selector=${LABEL_KEY}=${LABEL_VALUE}"
+
+                      kubectl get "$RESOURCE.$APIGROUP" --all-namespaces -o json --selector="${LABEL_KEY}=${LABEL_VALUE}"
+
+                      kubectl get "$RESOURCE.$APIGROUP" --all-namespaces -o json --selector="${LABEL_KEY}=${LABEL_VALUE}" | \
+                      jq --arg resource "$RESOURCE" --argjson parentRefs "$PARENT_REFS" '
+                        .items[] |
+                        select(.metadata.name | test("composition") | not) |
+                        {apiVersion: .apiVersion, resource: $resource, name: .metadata.name, namespace: .metadata.namespace, parentRefs: [$parentRefs]}
+                      ' >> $OUTPUT_FILE
+
+                    else
+
+                      debug "Namespaced: kubectl get $RESOURCE --all-namespaces -o json --selector=${LABEL_KEY}=${LABEL_VALUE}"
+
+                      kubectl get "$RESOURCE" --all-namespaces -o json --selector="${LABEL_KEY}=${LABEL_VALUE}"
+
+                      kubectl get "$RESOURCE" --all-namespaces -o json --selector="${LABEL_KEY}=${LABEL_VALUE}" | \
+                      jq --arg resource "$RESOURCE" --argjson parentRefs "$PARENT_REFS" '
+                        .items[] |
+                        select(.metadata.name | test("composition") | not) |
+                        {apiVersion: .apiVersion, resource: $resource, name: .metadata.name, namespace: .metadata.namespace, parentRefs: [$parentRefs]}
+                      ' >> $OUTPUT_FILE
+
+                    fi
+
+                  else
+
+                    if [ -n "$APIGROUP" ]; then
+
+                      # Non-namespaced resources
+                      debug "Clustered: kubectl get $RESOURCE.$APIGROUP -o json --selector=${LABEL_KEY}=${LABEL_VALUE}"
+
+                      kubectl get "$RESOURCE.$APIGROUP" -o json --selector="${LABEL_KEY}=${LABEL_VALUE}"
+
+                      kubectl get "$RESOURCE.$APIGROUP" -o json --selector="${LABEL_KEY}=${LABEL_VALUE}" | \
+                      jq --arg resource "$RESOURCE" --argjson parentRefs "$PARENT_REFS" '
+                        .items[] |
+                        select(.metadata.name | test("composition") | not) |
+                        {apiVersion: .apiVersion, resource: $resource, name: .metadata.name, parentRefs: [$parentRefs]}
+                      ' >> $OUTPUT_FILE
+
+                    else
+
+                      # Non-namespaced resources
+                      debug "Clustered: kubectl get $RESOURCE -o json --selector=${LABEL_KEY}=${LABEL_VALUE}"
+
+                      kubectl get "$RESOURCE" -o json --selector="${LABEL_KEY}=${LABEL_VALUE}"
+
+                      kubectl get "$RESOURCE" -o json --selector="${LABEL_KEY}=${LABEL_VALUE}" | \
+                      jq --arg resource "$RESOURCE" --argjson parentRefs "$PARENT_REFS" '
+                        .items[] |
+                        select(.metadata.name | test("composition") | not) |
+                        {apiVersion: .apiVersion, resource: $resource, name: .metadata.name, parentRefs: [$parentRefs]}
+                      ' >> $OUTPUT_FILE
+
+                    fi
                   fi
-                else
-                  # Non-namespaced resources
-                  debug "Clustered: kubectl get "$RESOURCE" -o json --selector="${LABEL_KEY}=${LABEL_VALUE}""
-
-                  kubectl get "$RESOURCE" -o json --selector="${LABEL_KEY}=${LABEL_VALUE}" | \
-                  jq --arg resource "$RESOURCE" --argjson parentRefs "$PARENT_REFS" '
-                    .items[] |
-                    select(.metadata.name | test("composition") | not) |
-                    {apiVersion: .apiVersion, resource: $resource, name: .metadata.name, parentRefs: [$parentRefs]}
-                  ' >> $OUTPUT_FILE
                 fi
               done
 
               debug "Combine the JSON objects into a single array"
 
               # Combine the JSON objects into a single array
-              jq -s . $OUTPUT_FILE >> ${OUTPUT_FILE}.tmp && mv ${OUTPUT_FILE}.tmp $OUTPUT_FILE
+              jq -s . $OUTPUT_FILE > ${OUTPUT_FILE}.tmp && mv ${OUTPUT_FILE}.tmp $OUTPUT_FILE
+
+              # Read the combined JSON and add parentRefs at the beginning
+              jq --argjson parentRefs "$PARENT_REFS" '[{"apiVersion": $parentRefs.apiVersion, "resource": $parentRefs.resource, "name": $parentRefs.name, "namespace": $parentRefs.namespace}] + .' $OUTPUT_FILE > ${OUTPUT_FILE}.tmp && mv ${OUTPUT_FILE}.tmp $OUTPUT_FILE
+
+              # Print the combined JSON for debugging
+              debug $(cat $OUTPUT_FILE)
 
               debug "Create the ResourceTree manifest"
 
@@ -233,7 +291,7 @@ spec:
                 namespace: {{ .Release.Namespace }}
               spec:
                 tree:
-              $(jq -r '.[] | "  - apiVersion: \(.apiVersion)\n    resource: \(.resource)\n    name: \(.name)\n\(. | if has("namespace") then "    namespace: \(.namespace)\n" else "" end)    parentRefs:\n" + (.parentRefs[] | "    - apiVersion: \(.apiVersion)\n      resource: \(.resource)\n      name: \(.name)\n      namespace: \(.namespace)\n")' $OUTPUT_FILE)
+              $(jq -r '.[] | "  - apiVersion: \(.apiVersion)\n    resource: \(.resource)\n    name: \(.name)\n\(. | if has("namespace") then "    namespace: \(.namespace)\n" else "" end)\(. | if has("parentRefs") then "\n    parentRefs:\n" + (.parentRefs | map("      - apiVersion: \(.apiVersion)\n        resource: \(.resource)\n        name: \(.name)\n" + (if has("namespace") then "        namespace: \(.namespace)\n" else "" end)) | join("\n")) else "" end)"' $OUTPUT_FILE)
               EOF
 
               # Print the final manifest for debugging
@@ -241,6 +299,7 @@ spec:
 
               # Apply the ResourceTree object
               kubectl apply -f $RESOURCETREE_FILE
+
           envFrom:
             - configMapRef:
                 name: composition-resourcetree-{{ .Release.Name }}-{{ .Release.Namespace }}
