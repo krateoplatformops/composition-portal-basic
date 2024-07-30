@@ -1,2 +1,4 @@
 overview:
   text: This is going to be the overview text
+krateoplatformops:
+  namespace: krateo-system
