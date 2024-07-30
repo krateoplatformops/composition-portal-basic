@@ -27,7 +27,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: composition-resourcetree-sa-{{ .Release.Name }}-{{ .Release.Namespace }}-rolebinding
+  name: composition-cluster-viewer-{{ .Release.Name }}-{{ .Release.Namespace }}-rolebinding
 subjects:
   - kind: ServiceAccount
     name: composition-resourcetree-sa-{{ .Release.Name }}-{{ .Release.Namespace }}
