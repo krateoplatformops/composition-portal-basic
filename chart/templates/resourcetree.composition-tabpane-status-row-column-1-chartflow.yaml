@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: composition-resourcetree-sa
+  name: composition-resourcetree-sa-{{ .Release.Name }}-{{ .Release.Namespace }}
   namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: composition-cluster-viewer
+  name: composition-cluster-viewer-{{ .Release.Name }}-{{ .Release.Namespace }}
 rules:
 - apiGroups:
   - '*'
@@ -27,20 +27,20 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: composition-resourcetree-rolebinding
+  name: composition-resourcetree-sa-{{ .Release.Name }}-{{ .Release.Namespace }}-rolebinding
 subjects:
   - kind: ServiceAccount
-    name: composition-resourcetree-sa
+    name: composition-resourcetree-sa-{{ .Release.Name }}-{{ .Release.Namespace }}
     namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: composition-cluster-viewer
+  name: composition-cluster-viewer-{{ .Release.Name }}-{{ .Release.Namespace }}
   apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: composition-resourcetree-creator
+  name: composition-resourcetree-creator-{{ .Release.Name }}-{{ .Release.Namespace }}
   namespace: {{ .Release.Namespace }}
 rules:
 - apiGroups: ["templates.krateo.io"]
@@ -50,15 +50,15 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: composition-resourcetree-creator-binding
+  name: composition-resourcetree-creator-{{ .Release.Name }}-{{ .Release.Namespace }}-binding
   namespace: {{ .Release.Namespace }}
 subjects:
 - kind: ServiceAccount
-  name: composition-resourcetree-sa
+  name: composition-resourcetree-sa-{{ .Release.Name }}-{{ .Release.Namespace }}
   namespace: {{ .Release.Namespace }}
 roleRef:
   kind: Role
-  name: composition-resourcetree-creator
+  name: composition-resourcetree-creator-{{ .Release.Name }}-{{ .Release.Namespace }}
   apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: v1
