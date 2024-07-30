@@ -99,7 +99,7 @@ spec:
   template:
     spec:
       ttlSecondsAfterFinished: 0
-      serviceAccountName: composition-resourcetree-sa
+      serviceAccountName: composition-resourcetree-sa-{{ .Release.Name }}-{{ .Release.Namespace }}
       containers:
         - name: kubectl
           image: bitnami/kubectl:latest
