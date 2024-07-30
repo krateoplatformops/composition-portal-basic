@@ -99,7 +99,7 @@ spec:
   template:
     spec:
       ttlSecondsAfterFinished: 0
-      serviceAccountName: resourcetree-sa
+      serviceAccountName: composition-resourcetree-sa
       containers:
         - name: kubectl
           image: bitnami/kubectl:latest
