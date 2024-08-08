@@ -6,15 +6,33 @@ metadata:
 spec:
   type: tablist
   widgetsRefs:
+  {{- if .Values.overview.enabled }}
   - apiVersion: templates.krateo.io/v1alpha1
     resource: collections
     name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-overview
     namespace: {{ .Release.Namespace }}
+  {{- end }}
+  {{- if .Values.compositionstatus.enabled }}
   - apiVersion: templates.krateo.io/v1alpha1
     resource: collections
-    name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-status
+    name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-compositionstatus
     namespace: {{ .Release.Namespace }}
+  {{- end }}
+  {{- if .Values.events.enabled }}
   - apiVersion: templates.krateo.io/v1alpha1
     resource: collections
     name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events
     namespace: {{ .Release.Namespace }}
+  {{- end }}
+  {{- if .Values.applicationstatus.enabled }}
+  - apiVersion: templates.krateo.io/v1alpha1
+    resource: collections
+    name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-applicationstatus
+    namespace: {{ .Release.Namespace }}
+  {{- end }}
+  {{- if .Values.terminal.enabled }}
+  - apiVersion: templates.krateo.io/v1alpha1
+    resource: collections
+    name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-terminal
+    namespace: {{ .Release.Namespace }}
+  {{- end }}

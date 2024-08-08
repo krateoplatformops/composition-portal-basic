@@ -1,0 +1,42 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-terminal-row-column-1-panel-terminal
+  namespace: {{ .Release.Namespace }}
+data:
+  commands: |
+    [
+      {
+        "command": "sudo systemctl start wg-quick@wg0.service",
+        "label": "vpn-start"
+      },
+      {
+        "command": "sudo systemctl stop wg-quick@wg0.service",
+        "label": "vpn-stop"
+      },
+      {
+        "command": "bash /home/galdi/utilities/vpn-status.sh",
+        "label": "vpn-status"
+      },
+      {
+        "command": "echo -n "admin:" && k3s kubectl -n default get secret influxdb-auth -o jsonpath='{.data.admin-password}' | base64 -d",
+        "label": "influxdb-credentials"
+      },
+      {
+        "command": "echo -n "admin:" && k3s kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d",
+        "label": "argocd-credentials"
+      }
+    ]
+  nodeId: {{ .Values.global.compositionId }}
+---
+apiVersion: templates.krateo.io/v1alpha1
+kind: Widget
+metadata:
+  name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-terminal-row-column-1-panel-terminal
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: terminal
+  propsRef:
+    name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-terminal-row-column-1-panel-terminal
+    namespace: {{ .Release.Namespace }}
