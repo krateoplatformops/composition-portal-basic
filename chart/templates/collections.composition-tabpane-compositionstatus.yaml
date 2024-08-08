@@ -4,7 +4,7 @@ metadata:
   name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-compositionstatus
   namespace: {{ .Release.Namespace }}
 data:
-  label: Composition compositionstatus
+  label: Composition Status
 ---
 apiVersion: templates.krateo.io/v1alpha1
 kind: Collection

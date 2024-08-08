@@ -4,7 +4,7 @@ metadata:
   name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-terminal
   namespace: {{ .Release.Namespace }}
 data:
-  label: terminal
+  label: Terminal
 ---
 apiVersion: templates.krateo.io/v1alpha1
 kind: Collection
