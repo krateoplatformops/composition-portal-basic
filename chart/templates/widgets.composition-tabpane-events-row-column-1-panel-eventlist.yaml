@@ -1,43 +1,3 @@
-apiVersion: krateo.io/v1alpha1
-kind: Patch
-metadata:
-  name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events-row-column-1-panel-eventlist
-spec:
-  from:
-    objectReference:
-      apiVersion: templates.krateo.io/v1alpha1
-      kind: Widget
-      name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events-row-column-1-panel-eventlist
-      namespace: {{ .Release.Namespace }}
-    fieldPath: metadata
-  to:
-    objectReference:
-      apiVersion: templates.krateo.io/v1alpha1
-      kind: Widget
-      name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events-row-column-1-panel-eventlist
-      namespace: {{ .Release.Namespace }}
-    fieldPath: spec.api[0].path
-    transform: ${ "/events/" + .labels["krateo.io/composition-id"] + "?limit=50" }
----
-apiVersion: krateo.io/v1alpha1
-kind: Patch
-metadata:
-  name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events-row-column-1-panel-eventlist-configmap
-spec:
-  from:
-    objectReference:
-      apiVersion: templates.krateo.io/v1alpha1
-      kind: Widget
-      name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events-row-column-1-panel-eventlist
-      namespace: {{ .Release.Namespace }}
-    fieldPath: metadata.labels["krateo.io/composition-id"]
-  to:
-    objectReference:
-      apiVersion: v1
-      kind: ConfigMap
-      name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events-row-column-1-panel-eventlist
-      namespace: {{ .Release.Namespace }}
-    fieldPath: data.sseTopic
 ---
 kind: ConfigMap
 apiVersion: v1
@@ -47,7 +7,7 @@ metadata:
 data:
   asGrid: "false"
   sseEndpoint: /notifications/
-  sseTopic: compositionId
+  sseTopic: {{ .Values.global.compositionId }}
 ---
 apiVersion: templates.krateo.io/v1alpha1
 kind: Widget
@@ -65,10 +25,10 @@ spec:
       event: ${ . | tostring }
   api:
   - name: getEvents
-    path: "/"
+    path: /events/" + {{ .Values.global.compositionId }} + "?limit=50
     verb: GET
     endpointRef:
       name: eventsse-internal-endpoint
-      namespace: {{ .Values.krateoplatformops.namespace }}
+      namespace: {{ .Values.namespace }}
     headers:
     - 'Accept: application/json'

@@ -1,4 +1,14 @@
 overview:
+  enabled: true
   text: This is going to be the overview text
-krateoplatformops:
-  namespace: krateo-system
+compositionstatus:
+  enabled: true
+applicationstatus:
+  enabled: true
+terminal:
+  enabled: true
+events:
+  enabled: true
+namespace: krateo-system
+global:
+  compositionId: compositionId
