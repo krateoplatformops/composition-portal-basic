@@ -10,3 +10,5 @@ terminal:
 events:
   enabled: true
 namespace: krateo-system
+global:
+  compositionId: compositionId
