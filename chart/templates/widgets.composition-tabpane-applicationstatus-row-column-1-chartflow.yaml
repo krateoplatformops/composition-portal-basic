@@ -16,6 +16,6 @@ spec:
     verb: GET
     endpointRef:
       name: argocd-endpoint
-      namespace: {{ .Values.krateoplatformops.namespace }}
+      namespace: {{ .Values.namespace }}
     headers:
     - 'Accept: application/json'
