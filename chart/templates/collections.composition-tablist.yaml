@@ -18,16 +18,16 @@ spec:
     name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-compositionstatus
     namespace: {{ .Release.Namespace }}
   {{- end }}
-  {{- if .Values.events.enabled }}
-  - apiVersion: templates.krateo.io/v1alpha1
-    resource: collections
-    name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events
-    namespace: {{ .Release.Namespace }}
-  {{- end }}
   {{- if .Values.applicationstatus.enabled }}
   - apiVersion: templates.krateo.io/v1alpha1
     resource: collections
     name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-applicationstatus
+    namespace: {{ .Release.Namespace }}
+  {{- end }}
+  {{- if .Values.events.enabled }}
+  - apiVersion: templates.krateo.io/v1alpha1
+    resource: collections
+    name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-events
     namespace: {{ .Release.Namespace }}
   {{- end }}
   {{- if .Values.terminal.enabled }}
