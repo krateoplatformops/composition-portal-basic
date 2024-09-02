@@ -12,7 +12,7 @@ spec:
       data: ${ .resourceTree.nodes }
   api:
   - name: resourceTree
-    path: "api/v1/applications/{{ .Release.Name }}-{{ .Chart.Name }}/resource-tree?namespace={{ .Release.Namespace }}"
+    path: "api/v1/applications/{{ .Release.Name }}-{{ .Release.Namespace }}/resource-tree?namespace={{ .Release.Namespace }}"
     verb: GET
     endpointRef:
       name: argocd-endpoint
