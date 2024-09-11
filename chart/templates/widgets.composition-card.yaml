@@ -26,8 +26,14 @@ spec:
   app:
     {{- with .Values.card }}
     template:
+<<<<<<< HEAD
       tags: {{ .Release.Namespace }}
       icon: fa-cubes
       title: {{ .Release.Name }}
       color: blue
       content: This is a card for {{ .Release.Name }} composition
+=======
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+      tags: {{ .Release.Namespace }}
+>>>>>>> main
