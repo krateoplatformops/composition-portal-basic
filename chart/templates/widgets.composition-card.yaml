@@ -28,12 +28,12 @@ spec:
       tags: {{ .Release.Namespace }}
       title: {{ .Release.Name }}
       content: This is a card for {{ .Release.Name }} composition
-      {{- if .Values.card.icon }}
+      {{- if and .Values.card .Values.card.icon }}
       icon: {{ .Values.card.icon }}
       {{- else }}
       icon: fa-circle-question
       {{- end }}
-      {{- if .Values.card.color }}
+      {{- if and .Values.card .Values.card.color }}
       color: {{ .Values.card.color }}
       {{- else }}
       color: grey
