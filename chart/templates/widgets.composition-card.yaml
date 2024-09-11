@@ -25,7 +25,16 @@ spec:
       namespace: {{ .Release.Namespace }}
   app:
     template:
-    {{- with .Values.card }}
-      {{- toYaml . | nindent 6 }}
-    {{- end }}
       tags: {{ .Release.Namespace }}
+      title: {{ .Release.Name }}
+      content: This is a card for {{ .Release.Name }} composition
+      {{- if and .Values.card .Values.card.icon }}
+      icon: {{ .Values.card.icon }}
+      {{- else }}
+      icon: fa-circle-question
+      {{- end }}
+      {{- if and .Values.card .Values.card.color }}
+      color: {{ .Values.card.color }}
+      {{- else }}
+      color: grey
+      {{- end }}
