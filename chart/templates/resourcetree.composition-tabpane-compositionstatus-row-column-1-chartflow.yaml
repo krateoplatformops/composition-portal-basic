@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: composition-resourcetree-sa-{{ .Release.Name }}-{{ .Release.Namespace }}
+  name: composition-resourcetree-sa-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: composition-cluster-viewer-{{ .Release.Name }}-{{ .Release.Namespace }}
+  name: composition-cluster-viewer-{{ .Release.Name }}
 rules:
 - apiGroups:
   - '*'
@@ -27,20 +27,20 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: composition-cluster-viewer-{{ .Release.Name }}-{{ .Release.Namespace }}-rolebinding
+  name: composition-cluster-viewer-{{ .Release.Name }}-rolebinding
 subjects:
   - kind: ServiceAccount
-    name: composition-resourcetree-sa-{{ .Release.Name }}-{{ .Release.Namespace }}
+    name: composition-resourcetree-sa-{{ .Release.Name }}
     namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: composition-cluster-viewer-{{ .Release.Name }}-{{ .Release.Namespace }}
+  name: composition-cluster-viewer-{{ .Release.Name }}
   apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: composition-resourcetree-creator-{{ .Release.Name }}-{{ .Release.Namespace }}
+  name: composition-resourcetree-creator-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
 rules:
 - apiGroups: ["templates.krateo.io"]
@@ -50,21 +50,21 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: composition-resourcetree-creator-{{ .Release.Name }}-{{ .Release.Namespace }}-binding
+  name: composition-resourcetree-creator-{{ .Release.Name }}-binding
   namespace: {{ .Release.Namespace }}
 subjects:
 - kind: ServiceAccount
-  name: composition-resourcetree-sa-{{ .Release.Name }}-{{ .Release.Namespace }}
+  name: composition-resourcetree-sa-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
 roleRef:
   kind: Role
-  name: composition-resourcetree-creator-{{ .Release.Name }}-{{ .Release.Namespace }}
+  name: composition-resourcetree-creator-{{ .Release.Name }}
   apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: composition-resourcetree-{{ .Release.Name }}-{{ .Release.Namespace }}
+  name: composition-resourcetree-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
 data:
   LABEL_VALUE: LABEL_VALUE
@@ -72,20 +72,20 @@ data:
 apiVersion: krateo.io/v1alpha1
 kind: Patch
 metadata:
-  name: composition-resourcetree-{{ .Release.Name }}-{{ .Release.Namespace }}
+  name: composition-resourcetree-{{ .Release.Name }}
 spec:
   from:
     objectReference:
       apiVersion: v1
       kind: ConfigMap
-      name: composition-resourcetree-{{ .Release.Name }}-{{ .Release.Namespace }}
+      name: composition-resourcetree-{{ .Release.Name }}
       namespace: {{ .Release.Namespace }}
     fieldPath: metadata
   to:
     objectReference:
       apiVersion: v1
       kind: ConfigMap
-      name: composition-resourcetree-{{ .Release.Name }}-{{ .Release.Namespace }}
+      name: composition-resourcetree-{{ .Release.Name }}
       namespace: {{ .Release.Namespace }}
     fieldPath: data.LABEL_VALUE
     transform: ${ .labels["krateo.io/composition-id"] }
@@ -93,13 +93,13 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: composition-resourcetree-{{ .Release.Name }}-{{ .Release.Namespace }}
+  name: composition-resourcetree-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
 spec:
   template:
     spec:
       ttlSecondsAfterFinished: 0
-      serviceAccountName: composition-resourcetree-sa-{{ .Release.Name }}-{{ .Release.Namespace }}
+      serviceAccountName: composition-resourcetree-sa-{{ .Release.Name }}
       containers:
         - name: kubectl
           image: bitnami/kubectl:latest
@@ -287,7 +287,7 @@ spec:
               apiVersion: templates.krateo.io/v1alpha1
               kind: ResourceTree
               metadata:
-                name: composition-resourcetree-{{ .Release.Name }}-{{ .Release.Namespace }}
+                name: composition-resourcetree-{{ .Release.Name }}
                 namespace: {{ .Release.Namespace }}
               spec:
                 tree:
@@ -302,6 +302,6 @@ spec:
 
           envFrom:
             - configMapRef:
-                name: composition-resourcetree-{{ .Release.Name }}-{{ .Release.Namespace }}
+                name: composition-resourcetree-{{ .Release.Name }}
       restartPolicy: OnFailure
   backoffLimit: 10
