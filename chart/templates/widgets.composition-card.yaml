@@ -26,15 +26,15 @@ spec:
   app:
     template:
       tags: {{ .Release.Namespace }}
-      {{- if .Values.card.icon }}
+      title: {{ .Release.Name }}
+      content: This is a card for {{ .Release.Name }} composition
+      {{- with .Values.card.icon }}
       icon: {{ .Values.card.icon }}
       {{- else }}
       icon: fa-circle-question
       {{- end }}
-      title: {{ .Release.Name }}
-      {{- if .Values.card.icon }}
+      {{- with .Values.card.color }}
       color: {{ .Values.card.color }}
       {{- else }}
       color: grey
-      {{- end}}
-      content: This is a card for {{ .Release.Name }} composition
+      {{- end }}
