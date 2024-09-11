@@ -2,7 +2,7 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-terminal-row-column-1-panel-terminal
+  name: composition-{{ .Release.Name }}-tabpane-terminal-row-column-1-panel-terminal
   namespace: {{ .Release.Namespace }}
 data:
   commands: |
@@ -33,10 +33,10 @@ data:
 apiVersion: templates.krateo.io/v1alpha1
 kind: Widget
 metadata:
-  name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-terminal-row-column-1-panel-terminal
+  name: composition-{{ .Release.Name }}-tabpane-terminal-row-column-1-panel-terminal
   namespace: {{ .Release.Namespace }}
 spec:
   type: terminal
   propsRef:
-    name: composition-{{ .Release.Name }}-{{ .Release.Namespace }}-tabpane-terminal-row-column-1-panel-terminal
+    name: composition-{{ .Release.Name }}-tabpane-terminal-row-column-1-panel-terminal
     namespace: {{ .Release.Namespace }}

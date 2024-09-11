@@ -1,0 +1,31 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: composition-{{ .Release.Name }}-card
+  namespace: {{ .Release.Namespace }}
+data:
+  panel: "false"
+---
+apiVersion: templates.krateo.io/v1alpha1
+kind: Widget
+metadata:
+  name: composition-{{ .Release.Name }}-card
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: card
+  propsRef:
+    name: composition-{{ .Release.Name }}-card
+    namespace: {{ .Release.Namespace }}
+  actions:
+  - template:
+      apiVersion: templates.krateo.io/v1alpha1
+      resource: collections
+      name: composition-{{ .Release.Name }}-tablist
+      namespace: {{ .Release.Namespace }}
+  app:
+    {{- with .Values.card }}
+    template:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+      tags: {{ .Release.Namespace }}
