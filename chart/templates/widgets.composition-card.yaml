@@ -24,16 +24,8 @@ spec:
       name: composition-{{ .Release.Name }}-tablist
       namespace: {{ .Release.Namespace }}
   app:
-    {{- with .Values.card }}
     template:
-<<<<<<< HEAD
-      tags: {{ .Release.Namespace }}
-      icon: fa-cubes
-      title: {{ .Release.Name }}
-      color: blue
-      content: This is a card for {{ .Release.Name }} composition
-=======
+    {{- with .Values.card }}
       {{- toYaml . | nindent 6 }}
     {{- end }}
       tags: {{ .Release.Namespace }}
->>>>>>> main
