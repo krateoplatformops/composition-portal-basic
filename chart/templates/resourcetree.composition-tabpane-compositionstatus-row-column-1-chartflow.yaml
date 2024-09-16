@@ -96,9 +96,9 @@ metadata:
   name: composition-resourcetree-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
 spec:
+  ttlSecondsAfterFinished: 0
   template:
     spec:
-      ttlSecondsAfterFinished: 0
       serviceAccountName: composition-resourcetree-sa-{{ .Release.Name }}
       containers:
         - name: kubectl
