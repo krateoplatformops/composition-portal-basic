@@ -15,7 +15,7 @@ spec:
       name: "^composition-"
   reference:
     #apiVersion: {{ .Values.global.compositionApiVersion }}
-    apiVersion: composition.krateo.io/v1-1-4
+    apiVersion: composition.krateo.io/v1-1-5
     name: {{ .Release.Name }}
     namespace: {{ .Release.Namespace }}
     #resource: {{ .Values.global.compositionResource }}
