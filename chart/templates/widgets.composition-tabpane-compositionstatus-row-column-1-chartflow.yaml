@@ -1,3 +1,26 @@
+apiVersion: resourcetrees.krateo.io/v1
+kind: CompositionReference
+metadata:
+  name: composition-{{ .Release.Name }}-tabpane-compositionstatus-row-column-1-chartflow
+  namespace: {{ .Release.Namespace }}
+spec:
+  filters:
+    exclude:
+    - apiVersion: "templates.krateo.io/v1alpha1"
+      resource: "collections"
+    - apiVersion: "templates.krateo.io/v1alpha1"
+      resource: "widgets"
+    - apiVersion: "v1"
+      resource: "configmaps"
+      name: "^composition-"
+  reference:
+    #apiVersion: {{ .Values.global.compositionApiVersion }}
+    apiVersion: composition.krateo.io/v1-1-4
+    name: {{ .Release.Name }}
+    namespace: {{ .Release.Namespace }}
+    #resource: {{ .Values.global.compositionResource }}
+    resource: fireworksapps
+---
 apiVersion: templates.krateo.io/v1alpha1
 kind: Widget
 metadata:
