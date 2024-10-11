@@ -12,7 +12,10 @@ spec:
       data: ${ .resourceTree.status }
   api:
   - name: resourceTree
-    path: "/apis/templates.krateo.io/v1alpha1/namespaces/{{ .Release.Namespace }}/resourcetrees/composition-resourcetree-{{ .Release.Name }}"
+    path: "compositions/{{ .Values.global.compositionId }}"
     verb: GET
+    endpointRef:
+      name: resource-tree-handler-endpoint
+      namespace: {{ .Values.namespace }}
     headers:
     - 'Accept: application/json'
