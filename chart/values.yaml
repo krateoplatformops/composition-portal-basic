@@ -12,3 +12,5 @@ events:
 namespace: krateo-system
 global:
   compositionId: compositionId
+  compositionApiVersion: compositionApiVersion
+  compositionResource: compositionResource
