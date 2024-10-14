@@ -30,7 +30,7 @@ spec:
   type: chartflow
   app:
     template:
-      data: ${ .resourceTree.status }
+      data: ${ .resourceTree.items }
   api:
   - name: resourceTree
     path: "compositions/{{ .Values.global.compositionId }}"
