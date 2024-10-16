@@ -36,3 +36,9 @@ spec:
     name: composition-{{ .Release.Name }}-tabpane-terminal
     namespace: {{ .Release.Namespace }}
   {{- end }}
+  {{- if .Values.yamlviewer.enabled }}
+  - apiVersion: templates.krateo.io/v1alpha1
+    resource: collections
+    name: composition-{{ .Release.Name }}-tabpane-yamlviewer
+    namespace: {{ .Release.Namespace }}
+  {{- end }}

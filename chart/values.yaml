@@ -9,6 +9,8 @@ terminal:
   enabled: false
 events:
   enabled: true
+yamlviewer:
+  enabled: true
 namespace: krateo-system
 global:
   compositionId: compositionId
