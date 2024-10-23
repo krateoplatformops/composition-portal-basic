@@ -1,3 +1,4 @@
+{{- if .Values.yamlviewer.enabled }}
 apiVersion: templates.krateo.io/v1alpha1
 kind: Collection
 metadata:
@@ -10,3 +11,4 @@ spec:
     resource: collections
     name: composition-{{ .Release.Name }}-tabpane-yamlviewer-row-column-1
     namespace: {{ .Release.Namespace }}
+{{- end }}

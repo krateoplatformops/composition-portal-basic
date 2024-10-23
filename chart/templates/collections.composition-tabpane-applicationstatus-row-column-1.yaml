@@ -1,3 +1,4 @@
+{{- if .Values.applicationstatus.enabled }}
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -21,4 +22,4 @@ spec:
     resource: widgets
     name: composition-{{ .Release.Name }}-tabpane-applicationstatus-row-column-1-chartflow
     namespace: {{ .Release.Namespace }}
----
+{{- end }}

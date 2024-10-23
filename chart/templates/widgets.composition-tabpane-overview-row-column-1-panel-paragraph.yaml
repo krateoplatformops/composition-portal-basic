@@ -1,3 +1,4 @@
+{{- if .Values.overview.enabled }}
 apiVersion: templates.krateo.io/v1alpha1
 kind: Widget
 metadata:
@@ -8,3 +9,4 @@ spec:
   app:
     template:
       text: {{ .Values.overview.text }}
+{{- end}}
