@@ -1,3 +1,4 @@
+{{- if .Values.yamlviewer.enabled }}
 apiVersion: templates.krateo.io/v1alpha1
 kind: Widget
 metadata:
@@ -14,3 +15,4 @@ spec:
     verb: GET
     headers:
     - 'Accept: application/yaml'
+{{- end }}

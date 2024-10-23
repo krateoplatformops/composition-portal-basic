@@ -1,4 +1,4 @@
----
+{{- if .Values.events.enabled }}
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -32,3 +32,4 @@ spec:
       namespace: {{ .Values.namespace }}
     headers:
     - 'Accept: application/json'
+{{- end }}
