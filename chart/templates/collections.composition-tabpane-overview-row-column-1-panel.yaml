@@ -11,4 +11,4 @@ spec:
     resource: widgets
     name: composition-{{ .Release.Name }}-tabpane-overview-row-column-1-panel-paragraph
     namespace: {{ .Release.Namespace }}
-{{- end}}
+{{- end }}

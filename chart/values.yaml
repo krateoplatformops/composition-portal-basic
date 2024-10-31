@@ -10,7 +10,7 @@ terminal:
 events:
   enabled: true
 yamlviewer:
-  enabled: true
+  enabled: false
 namespace: krateo-system
 global:
   compositionId: compositionId
