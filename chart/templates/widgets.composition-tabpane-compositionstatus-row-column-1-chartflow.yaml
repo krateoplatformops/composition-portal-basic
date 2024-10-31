@@ -2,7 +2,7 @@
 apiVersion: resourcetrees.krateo.io/v1
 kind: CompositionReference
 metadata:
-  name: composition-{{ .Release.Name }}-tabpane-compositionstatus-row-column-1-chartflow
+  name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
 spec:
   filters:
