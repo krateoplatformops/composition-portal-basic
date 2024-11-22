@@ -23,6 +23,13 @@ spec:
       resource: collections
       name: composition-{{ .Release.Name }}-tablist
       namespace: {{ .Release.Namespace }}
+      verb: POST
+  - template:
+      apiVersion: {{ .Values.global.compositionApiVersion }}
+      resource: {{ .Values.global.compositionResource }}
+      name:  {{ .Release.Name }}
+      namespace: {{ .Release.Namespace }}
+      verb: DELETE
   app:
     template:
       tags: {{ .Release.Namespace }}
