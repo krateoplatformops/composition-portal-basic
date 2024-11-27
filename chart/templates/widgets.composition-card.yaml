@@ -23,7 +23,7 @@ spec:
       resource: collections
       name: composition-{{ .Release.Name }}-tablist
       namespace: {{ .Release.Namespace }}
-      verb: POST
+      verb: GET
   - template:
       apiVersion: {{ .Values.global.compositionApiVersion }}
       resource: {{ .Values.global.compositionResource }}
