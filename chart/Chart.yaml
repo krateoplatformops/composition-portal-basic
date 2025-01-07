@@ -1,6 +1,6 @@
 apiVersion: v2
-name: composition-portal-basic
-description: Basic portal components for a composition
+name: composition-portal-basic-mlflow
+description: Basic portal components for MLFlow composition
 
 # A chart can be either an 'application' or a 'library' chart.
 #
