@@ -7,4 +7,4 @@ spec:
   type: paragraph
   app:
     template:
-      text: {{ .Values.overview.text }}
+      text: "This is a scaffolded MLFlow model"
