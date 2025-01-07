@@ -1,4 +1,3 @@
-{{- if .Values.overview.enabled }}
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -22,4 +21,3 @@ spec:
     resource: collections
     name: composition-{{ .Release.Name }}-tabpane-overview-row-column-1-panel
     namespace: {{ .Release.Namespace }}
-{{- end }}

@@ -1,0 +1,33 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: composition-{{ .Release.Name }}-tabpane-runs-row-column-1-panel-row-column-1-tabledata
+  namespace: {{ .Release.Namespace }}
+data:
+  pageSize: "10"
+  columns: "[ { \"key\": \"run_id\", \"title\": \"run_id\" },{ \"key\": \"run_name\", \"title\": \"run_name\"},{\"key\": \"experiment_id\", \"title\": \"experiment_id\"},{\"key\": \"date\", \"title\": \"date\"} ]"    
+---
+apiVersion: templates.krateo.io/v1alpha1
+kind: Widget
+metadata:
+    name: composition-{{ .Release.Name }}-tabpane-runs-row-column-1-panel-row-column-1-tabledata
+    namespace: {{ .Release.Namespace }}
+spec:
+  type: tabledata
+  propsRef:
+    name: composition-{{ .Release.Name }}-tabpane-runs-row-column-1-panel-row-column-1-tabledata
+    namespace: {{ .Release.Namespace }}
+  app:
+    template:
+      data: >
+        ${ [.allRuns.items[] | select(.metadata.labels."krateo.io/composition-id" == "{{ .Values.global.compositionId }}") | { key: .metadata.uid, run_id: .status.run_id, run_name: .status.run_name, date: .metadata.creationTimestamp ] }
+  api:
+  - name: allRuns
+    path: "/list?category=run"
+    verb: GET
+    endpointRef:
+      name: bff-endpoint
+      namespace: krateo-system
+    headers:
+    - 'Accept: application/json'
