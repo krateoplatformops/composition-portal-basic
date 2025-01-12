@@ -6,27 +6,39 @@ metadata:
 spec:
   type: tablist
   widgetsRefs:
+  {{- if .Values.overview.enabled }}
   - apiVersion: templates.krateo.io/v1alpha1
     resource: collections
     name: composition-{{ .Release.Name }}-tabpane-overview
     namespace: {{ .Release.Namespace }}
+  {{- end }}
+  {{- if .Values.compositionstatus.enabled }}
   - apiVersion: templates.krateo.io/v1alpha1
     resource: collections
     name: composition-{{ .Release.Name }}-tabpane-compositionstatus
     namespace: {{ .Release.Namespace }}
+  {{- end }}
+  {{- if .Values.applicationstatus.enabled }}
   - apiVersion: templates.krateo.io/v1alpha1
     resource: collections
-    name: composition-{{ .Release.Name }}-tabpane-runs
+    name: composition-{{ .Release.Name }}-tabpane-applicationstatus
     namespace: {{ .Release.Namespace }}
-  # - apiVersion: templates.krateo.io/v1alpha1
-  #   resource: collections
-  #   name: composition-{{ .Release.Name }}-tabpane-registration
-  #   namespace: {{ .Release.Namespace }}
-  # - apiVersion: templates.krateo.io/v1alpha1
-  #   resource: collections
-  #   name: composition-{{ .Release.Name }}-tabpane-deployment
-  #   namespace: {{ .Release.Namespace }}
+  {{- end }}
+  {{- if .Values.events.enabled }}
   - apiVersion: templates.krateo.io/v1alpha1
     resource: collections
     name: composition-{{ .Release.Name }}-tabpane-events
     namespace: {{ .Release.Namespace }}
+  {{- end }}
+  {{- if .Values.terminal.enabled }}
+  - apiVersion: templates.krateo.io/v1alpha1
+    resource: collections
+    name: composition-{{ .Release.Name }}-tabpane-terminal
+    namespace: {{ .Release.Namespace }}
+  {{- end }}
+  {{- if .Values.yamlviewer.enabled }}
+  - apiVersion: templates.krateo.io/v1alpha1
+    resource: collections
+    name: composition-{{ .Release.Name }}-tabpane-yamlviewer
+    namespace: {{ .Release.Namespace }}
+  {{- end }}
