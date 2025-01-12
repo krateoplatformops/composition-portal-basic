@@ -21,13 +21,13 @@ spec:
   app:
     template:
       data: >
-        ${ [.allRuns.items[] | select(.metadata.labels."krateo.io/composition-id" == "{{ .Values.global.compositionId }}") | { key: .metadata.uid, run_id: .status.run_id, run_name: .status.run_name, date: .metadata.creationTimestamp ] }
+        ${ [.allRuns.items[] | { key: .metadata.uid, run_id: .status.run_id, run_name: .status.run_name, date: .metadata.creationTimestamp } ] }
   api:
   - name: allRuns
-    path: "/list?category=run"
+    path: "/apis/mlflow.krateo.io/v1alpha1/namespaces/{{ .Values.global.compositionId }}/runs/"
     verb: GET
     endpointRef:
-      name: bff-endpoint
+      name: snowplow-endpoint
       namespace: krateo-system
     headers:
     - 'Accept: application/json'

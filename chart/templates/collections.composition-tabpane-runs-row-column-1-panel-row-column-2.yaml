@@ -19,5 +19,5 @@ spec:
   widgetsRefs:
   - apiVersion: templates.krateo.io/v1alpha1
     resource: widgets
-    name: composition-{{ .Release.Name }}-tabpane-runs-row-column-1-panel-row-column-2-customform
-    namespace: {{ .Release.Namespace }}
+    name: composition-{{ .Release.Name }}-tabpane-runs-row-column-1-panel-row-column-2-card
+    namespace: ${ .metadata.namespace }
