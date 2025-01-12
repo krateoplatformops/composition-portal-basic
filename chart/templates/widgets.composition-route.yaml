@@ -1,0 +1,18 @@
+apiVersion: templates.krateo.io/v1alpha1
+kind: Widget
+metadata:
+  name: composition-{{ .Release.Name }}-route
+  namespace: {{ .Release.Namespace }}
+spec:
+  actions:
+  - template:
+      apiVersion: templates.krateo.io/v1alpha1
+      name: composition-{{ .Release.Name }}-tablist
+      namespace: {{ .Release.Namespace }}
+      resource: collections
+      verb: GET
+  app:
+    template:
+      menu: "false"
+      path: /compositions/{{ .Values.global.compositionId }}
+  type: route

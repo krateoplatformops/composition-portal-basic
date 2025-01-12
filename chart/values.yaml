@@ -1,16 +1,3 @@
-overview:
-  enabled: true
-  text: This is going to be the overview text
-compositionstatus:
-  enabled: true
-applicationstatus:
-  enabled: true
-terminal:
-  enabled: false
-events:
-  enabled: true
-yamlviewer:
-  enabled: false
 namespace: krateo-system
 global:
   compositionId: compositionId
