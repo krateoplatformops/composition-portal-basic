@@ -11,8 +11,11 @@ events:
   enabled: true
 yamlviewer:
   enabled: true
-namespace: krateo-system
 global:
-  compositionId: compositionId
   compositionApiVersion: compositionApiVersion
+  compositionId: compositionId
+  compositionKind: compositionKind
+  compositionName: compositionName
+  compositionNamespace: compositionNamespace
   compositionResource: compositionResource
+  krateoNamespace: krateoNamespace

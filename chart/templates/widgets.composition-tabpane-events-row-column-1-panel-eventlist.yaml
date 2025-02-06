@@ -29,7 +29,7 @@ spec:
     verb: GET
     endpointRef:
       name: eventsse-internal-endpoint
-      namespace: {{ .Values.namespace }}
+      namespace: {{ .Values.global.krateoNamespace }}
     headers:
     - 'Accept: application/json'
 {{- end }}

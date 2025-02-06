@@ -38,7 +38,7 @@ spec:
     verb: GET
     endpointRef:
       name: resource-tree-handler-endpoint
-      namespace: {{ .Values.namespace }}
+      namespace: {{ .Values.global.krateoNamespace }}
     headers:
     - 'Accept: application/json'
 {{- end }}
