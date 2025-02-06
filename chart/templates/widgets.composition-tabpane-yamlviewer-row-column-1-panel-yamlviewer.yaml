@@ -5,7 +5,7 @@ metadata:
   name: composition-{{ .Release.Name }}-tabpane-yamlviewer-row-column-1-panel-yamlviewer
   namespace: {{ .Release.Namespace }}
 spec:
-  type: paragraph
+  type: yamlviewer
   app:
     template:
       json: ${ .getCompositionJSON }
