@@ -33,7 +33,7 @@ spec:
       verb: DELETE
   app:
     template:
-      tags: {{ .Release.Namespace }},{{.Chart.version}}
+      tags: {{ .Release.Namespace }},{{.Chart.Version}}
       title: {{ .Release.Name }}
       content: This is a card for {{ .Release.Name }} composition
       {{- if and .Values.card .Values.card.icon }}
