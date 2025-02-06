@@ -6,7 +6,7 @@ compositionstatus:
 applicationstatus:
   enabled: true
 terminal:
-  enabled: true
+  enabled: false
 events:
   enabled: true
 yamlviewer:
