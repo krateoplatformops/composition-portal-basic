@@ -8,7 +8,7 @@ spec:
   type: yamlviewer
   app:
     template:
-      json: ${ .getCompositionJSON }
+      json: ${ .getCompositionJSON | del(.metadata.managedFields) }
   api:
   - name: getCompositionJSON
     path: "/apis/{{ .Values.global.compositionApiVersion }}/namespaces/{{ .Release.Namespace }}/{{ .Values.global.compositionResource }}/{{ .Release.Name }}"
