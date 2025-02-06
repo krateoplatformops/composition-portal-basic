@@ -8,11 +8,9 @@ spec:
   type: paragraph
   app:
     template:
-      yaml: {{ .getCompositionYaml }}
+      json: ${ .getCompositionJSON }
   api:
-  - name: getCompositionYaml
+  - name: getCompositionJSON
     path: "/apis/{{ .Values.global.compositionApiVersion }}/namespaces/{{ .Release.Namespace }}/{{ .Values.global.compositionResource }}/{{ .Release.Name }}"
     verb: GET
-    headers:
-    - 'Accept: application/yaml'
 {{- end }}
