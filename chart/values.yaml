@@ -6,11 +6,11 @@ compositionstatus:
 applicationstatus:
   enabled: true
 terminal:
-  enabled: false
+  enabled: true
 events:
   enabled: true
 yamlviewer:
-  enabled: false
+  enabled: true
 namespace: krateo-system
 global:
   compositionId: compositionId
