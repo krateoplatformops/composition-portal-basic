@@ -6,6 +6,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 data:
   panel: "false"
+  route: /compositions/{{ .Release.Namespace }}/{{ .Release.Name }}
 ---
 apiVersion: templates.krateo.io/v1alpha1
 kind: Widget
@@ -32,7 +33,7 @@ spec:
       verb: DELETE
   app:
     template:
-      tags: {{ .Release.Namespace }}
+      tags: {{ .Release.Namespace }},{{.Chart.Version}}
       title: {{ .Release.Name }}
       content: This is a card for {{ .Release.Name }} composition
       {{- if and .Values.card .Values.card.icon }}
@@ -40,8 +41,10 @@ spec:
       {{- else }}
       icon: fa-circle-question
       {{- end }}
-      {{- if and .Values.card .Values.card.color }}
-      color: {{ .Values.card.color }}
-      {{- else }}
-      color: grey
-      {{- end }}
+      color: ${ .getComposition.status.conditions[] | select(.type == "Ready") | if .status == "False" then "orange" elif .status == "True" then "green" else "grey" end }
+      status: ${ .getComposition.status.conditions[] | select(.type == "Ready") | "Ready:" + .status }
+      date: ${ .getComposition.metadata.creationTimestamp }
+  api:
+  - name: getComposition
+    path: "/apis/{{ .Values.global.compositionApiVersion }}/namespaces/{{ .Release.Namespace }}/{{ .Values.global.compositionResource }}/{{ .Release.Name }}"
+    verb: GET
