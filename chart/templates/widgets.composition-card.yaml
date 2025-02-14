@@ -5,8 +5,6 @@ metadata:
   name: composition-{{ .Release.Name }}-card
   namespace: {{ .Release.Namespace }}
 data:
-  drawer: "true"
-  form: "true"
   route: /compositions/{{ .Release.Namespace }}/{{ .Release.Name }}
 ---
 apiVersion: templates.krateo.io/v1alpha1
@@ -34,7 +32,7 @@ spec:
       verb: DELETE
   app:
     template:
-      tags: {{ .Release.Namespace }},{{.Chart.Version}}
+      tags: {{ .Release.Namespace }},{{ .Values.global.compositionApiVersion }}
       title: {{ .Release.Name }}
       content: This is a card for {{ .Release.Name }} composition
       {{- if and .Values.card .Values.card.icon }}
