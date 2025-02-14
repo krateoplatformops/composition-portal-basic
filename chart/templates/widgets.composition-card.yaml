@@ -5,7 +5,8 @@ metadata:
   name: composition-{{ .Release.Name }}-card
   namespace: {{ .Release.Namespace }}
 data:
-  panel: "false"
+  drawer: "true"
+  form: "true"
   route: /compositions/{{ .Release.Namespace }}/{{ .Release.Name }}
 ---
 apiVersion: templates.krateo.io/v1alpha1
