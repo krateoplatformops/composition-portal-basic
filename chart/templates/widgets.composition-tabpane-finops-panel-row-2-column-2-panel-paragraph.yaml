@@ -1,0 +1,11 @@
+{{- if .Values.finops.enabled }}
+apiVersion: templates.krateo.io/v1alpha1
+kind: Widget
+metadata:
+  name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-2-column-2-panel-paragraph
+spec:
+  type: paragraph
+  app:
+    template:
+      text: "Desc2"
+{{- end }}
