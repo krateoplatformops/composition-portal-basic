@@ -17,7 +17,7 @@ spec:
   type: column
   widgetsRefs:
   - apiVersion: templates.krateo.io/v1alpha1
-    name: composition-{{ .Release.Name }}-tabpane-finops-rpanel-row-2-column-1-panel
+    name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-2-column-1-panel
     namespace: {{ .Release.Namespace }}
     resource: collections
 {{- end }}
