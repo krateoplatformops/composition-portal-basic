@@ -7,5 +7,5 @@ spec:
   type: paragraph
   app:
     template:
-      text: "Desc2"
+      text: "The total utilization for the requested resources."
 {{- end }}
