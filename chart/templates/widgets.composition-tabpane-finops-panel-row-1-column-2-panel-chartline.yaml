@@ -1,0 +1,50 @@
+{{- if .Values.finops.enabled }}
+apiVersion: templates.krateo.io/v1alpha1
+kind: Widget
+metadata:
+  name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-1-column-2-panel-chartline
+spec:
+  type: chartline
+  app:
+    template:
+      xAxisName: ${ .metrics.status.xAxisName }
+      yAxisName: ${ .metrics.status.yAxisName }
+      legendName: ${ .metrics.status.legendName }
+      color: ${ .metrics.status.color }
+      data: ${ .metrics.status.data }
+  api:
+  - name: metrics
+    path: "/call?apiVersion=templates.krateo.io%2Fv1&resource=restactions&name=composition-{{ .Release.Name }}-get-metrics&namespace=azure-pricing-system"
+    verb: GET
+    endpointRef:
+      name: snowplow-endpoint
+      namespace: krateo-system
+    headers:
+    - 'Accept: application/json'
+---
+apiVersion: templates.krateo.io/v1
+kind: RESTAction
+metadata:
+  name: composition-{{ .Release.Name }}-get-metrics
+spec:
+  api:
+  - name: getComposition
+    path: "/apis/composition.krateo.io/v0-1-1/namespaces/{{ .Release.Namespace }}/finopsexamplepricingvmazures/{{ .Release.Name }}"
+    verb: GET
+    headers:
+    - 'Accept: application/json'
+  - name: metrics
+    dependsOn: 
+      name: getComposition
+    endpointRef: 
+      name: finops-database-handler-endpoint
+      namespace: krateo-system
+    path: "/compute/metrics"
+    verb: POST
+    payload: |
+      ${ {table_name: "{{ .Values.global.tableName }}_res", resource_name: .getComposition.spec.name, resource_group_name: .getComposition.spec.resourceGroupName } }
+    headers:
+    - 'Accept: application/json'
+    - 'Content-Type: application/json'
+  filter: .metrics
+{{- end }}

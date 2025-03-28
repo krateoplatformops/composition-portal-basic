@@ -42,3 +42,9 @@ spec:
     name: composition-{{ .Release.Name }}-tabpane-yamlviewer
     namespace: {{ .Release.Namespace }}
   {{- end }}
+  {{- if .Values.finops.enabled }}
+  - apiVersion: templates.krateo.io/v1alpha1
+    resource: collections
+    name: composition-{{ .Release.Name }}-tabpane-finops
+    namespace: {{ .Release.Namespace }}
+  {{- end }}

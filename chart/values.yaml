@@ -11,6 +11,8 @@ events:
   enabled: true
 yamlviewer:
   enabled: true
+finops:
+  enabled: false
 global:
   compositionApiVersion: compositionApiVersion
   compositionId: compositionId
