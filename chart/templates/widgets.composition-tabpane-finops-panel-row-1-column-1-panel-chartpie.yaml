@@ -15,7 +15,7 @@ spec:
         ( [ .costs.status.series[0].data[] | "{ \"color\": \"" + .color + "\", \"value\": \"" + (.value | tostring) + "\", \"label\": \"" + .label + "\"}" ] | join(",") ) + "]}" }
   api:
   - name: costs
-    path: "/call?apiVersion=templates.krateo.io%2Fv1&resource=restactions&name={{ .Release.Name }}-get-costs&namespace=azure-pricing-system"
+    path: "/call?apiVersion=templates.krateo.io%2Fv1&resource=restactions&name=composition-{{ .Release.Name }}-get-costs&namespace=azure-pricing-system"
     verb: GET
     endpointRef:
       name: snowplow-endpoint
@@ -26,11 +26,11 @@ spec:
 apiVersion: templates.krateo.io/v1
 kind: RESTAction
 metadata:
-  name: {{ .Release.Name }}-get-costs
+  name: composition-{{ .Release.Name }}-get-costs
 spec:
   api:
   - name: getComposition
-    path: "/apis/composition.krateo.io/{{ .Values.global.compositionApiVersion }}/namespaces/{{ .Release.Namespace }}/{{ .Values.global.compositionResource }}/{{ .Release.Name }}"
+    path: "/apis/{{ .Values.global.compositionApiVersion }}/namespaces/{{ .Release.Namespace }}/{{ .Values.global.compositionResource }}/{{ .Release.Name }}"
     verb: GET
     headers:
     - 'Accept: application/json'
