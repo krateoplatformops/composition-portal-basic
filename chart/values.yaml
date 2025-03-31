@@ -12,7 +12,7 @@ events:
 yamlviewer:
   enabled: true
 finops:
-  enabled: false
+  enabled: false 
 global:
   compositionApiVersion: compositionApiVersion
   compositionId: compositionId
