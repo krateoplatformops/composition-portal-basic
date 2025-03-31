@@ -29,7 +29,7 @@ metadata:
 spec:
   api:
   - name: getComposition
-    path: "/apis/composition.krateo.io/{{ .Values.global.compositionApiVersion }}/namespaces/{{ .Release.Namespace }}/{{ .Values.global.compositionResource }}/{{ .Release.Name }}"
+    path: "/apis/{{ .Values.global.compositionApiVersion }}/namespaces/{{ .Release.Namespace }}/{{ .Values.global.compositionResource }}/{{ .Release.Name }}"
     verb: GET
     headers:
     - 'Accept: application/json'
