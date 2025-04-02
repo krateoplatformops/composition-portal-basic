@@ -15,7 +15,7 @@ spec:
         ( [ .costs.status.series[0].data[] | "{ \"color\": \"" + .color + "\", \"value\": \"" + (.value | tostring) + "\", \"label\": \"" + .label + "\"}" ] | join(",") ) + "]}" }
   api:
   - name: costs
-    path: "/call?apiVersion=templates.krateo.io%2Fv1&resource=restactions&name=composition-{{ .Release.Name }}-get-costs&namespace=azure-pricing-system"
+    path: "/call?apiVersion=templates.krateo.io%2Fv1&resource=restactions&name=composition-{{ .Release.Name }}-get-costs&namespace={{ .Release.Namespace }}"
     verb: GET
     endpointRef:
       name: snowplow-endpoint
