@@ -14,7 +14,7 @@ spec:
       data: ${ .metrics.status.data }
   api:
   - name: metrics
-    path: "/call?apiVersion=templates.krateo.io%2Fv1&resource=restactions&name=composition-{{ .Release.Name }}-get-metrics&namespace=azure-pricing-system"
+    path: "/call?apiVersion=templates.krateo.io%2Fv1&resource=restactions&name=composition-{{ .Release.Name }}-get-metrics&namespace={{ .Release.Namespace }}"
     verb: GET
     endpointRef:
       name: snowplow-endpoint
