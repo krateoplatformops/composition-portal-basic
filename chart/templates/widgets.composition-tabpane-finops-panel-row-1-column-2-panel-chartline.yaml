@@ -7,14 +7,12 @@ spec:
   type: chartline
   app:
     template:
-      xAxisName: ${ .metrics.status.xAxisName }
-      yAxisName: ${ .metrics.status.yAxisName }
-      legendName: ${ .metrics.status.legendName }
-      color: ${ .metrics.status.color }
-      data: ${ .metrics.status.data }
+      lines: ${ .costsbreakdown.status.lines }
+      xAxisName: ${ .costsbreakdown.status.xAxisName }
+      yAxisName: ${ .costsbreakdown.status.yAxisName }
   api:
-  - name: metrics
-    path: "/call?apiVersion=templates.krateo.io%2Fv1&resource=restactions&name=composition-{{ .Release.Name }}-get-metrics&namespace={{ .Release.Namespace }}"
+  - name: costsbreakdown
+    path: "/call?apiVersion=templates.krateo.io%2Fv1&resource=restactions&name=composition-{{ .Release.Name }}-get-costs-breakdown&namespace={{ .Release.Namespace }}"
     verb: GET
     endpointRef:
       name: snowplow-endpoint
@@ -25,7 +23,7 @@ spec:
 apiVersion: templates.krateo.io/v1
 kind: RESTAction
 metadata:
-  name: composition-{{ .Release.Name }}-get-metrics
+  name: composition-{{ .Release.Name }}-get-costs-breakdown
 spec:
   api:
   - name: getComposition
@@ -33,18 +31,18 @@ spec:
     verb: GET
     headers:
     - 'Accept: application/json'
-  - name: metrics
+  - name: costsbreakdown
     dependsOn: 
       name: getComposition
     endpointRef: 
       name: finops-database-handler-endpoint
       namespace: krateo-system
-    path: "/compute/metrics"
+    path: "/compute/costsbreakdown"
     verb: POST
     payload: |
       ${ {table_name: "{{ .Values.global.tableName }}_res", resource_name: .getComposition.spec.name, resource_group_name: .getComposition.spec.resourceGroupName } }
     headers:
     - 'Accept: application/json'
     - 'Content-Type: application/json'
-  filter: .metrics
+  filter: .costsbreakdown
 {{- end }}
