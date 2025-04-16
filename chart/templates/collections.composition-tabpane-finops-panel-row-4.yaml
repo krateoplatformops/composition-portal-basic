@@ -1,0 +1,13 @@
+{{- if .Values.finops.enabled }}
+apiVersion: templates.krateo.io/v1alpha1
+kind: Collection
+metadata:
+  name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-4
+spec:
+  type: row
+  widgetsRefs:
+  - apiVersion: templates.krateo.io/v1alpha1
+    name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-4-column-1
+    namespace: {{ .Release.Namespace }}
+    resource: collections
+{{- end }}
