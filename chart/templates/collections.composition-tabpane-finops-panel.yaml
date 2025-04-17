@@ -24,4 +24,12 @@ spec:
     name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-2
     namespace: {{ .Release.Namespace }}
     resource: collections
+  - apiVersion: templates.krateo.io/v1alpha1
+    name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-3
+    namespace: {{ .Release.Namespace }}
+    resource: collections
+  - apiVersion: templates.krateo.io/v1alpha1
+    name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-4
+    namespace: {{ .Release.Namespace }}
+    resource: collections
 {{- end }}

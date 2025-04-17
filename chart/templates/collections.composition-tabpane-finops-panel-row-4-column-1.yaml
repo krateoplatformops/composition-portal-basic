@@ -1,0 +1,23 @@
+{{- if .Values.finops.enabled }}
+apiVersion: v1
+data:
+  width: "22"
+kind: ConfigMap
+metadata:
+  name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-4-column-1
+---
+apiVersion: templates.krateo.io/v1alpha1
+kind: Collection
+metadata:
+  name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-4-column-1
+spec:
+  propsRef:
+    name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-4-column-1
+    namespace: {{ .Release.Namespace }}
+  type: column
+  widgetsRefs:
+  - apiVersion: templates.krateo.io/v1alpha1
+    name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-4-column-1-panel
+    namespace: {{ .Release.Namespace }}
+    resource: collections
+{{- end }}

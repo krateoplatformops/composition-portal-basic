@@ -1,0 +1,11 @@
+{{- if .Values.finops.enabled }}
+apiVersion: templates.krateo.io/v1alpha1
+kind: Widget
+metadata:
+  name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-4-column-1-panel-paragraph
+spec:
+  type: paragraph
+  app:
+    template:
+      text: "The resource utilization and the proposed optimization for the given resource."
+{{- end }}
