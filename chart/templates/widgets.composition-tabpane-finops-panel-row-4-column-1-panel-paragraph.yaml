@@ -5,7 +5,13 @@ metadata:
   name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-4-column-1-panel-paragraph
 spec:
   type: paragraph
+  api:
+  - name: getComposition
+    path: "/apis/{{ .Values.global.compositionApiVersion }}/namespaces/{{ .Release.Namespace }}/{{ .Values.global.compositionResource }}/{{ .Release.Name }}"
+    verb: GET
+    headers:
+    - 'Accept: application/json'
   app:
     template:
-      text: "The resource utilization and the proposed optimization for the given resource."
+      text: ${ .getComposition.spec.optimization // "Optimization request pending..." }
 {{- end }}
