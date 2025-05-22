@@ -1,0 +1,17 @@
+{{- if .Values.finops.enabled }}
+apiVersion: templates.krateo.io/v1alpha1
+kind: Widget
+metadata:
+  name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-3-column-2-panel-paragraph
+spec:
+  type: paragraph
+  api:
+  - name: getComposition
+    path: "/apis/{{ .Values.global.compositionApiVersion }}/namespaces/{{ .Release.Namespace }}/{{ .Values.global.compositionResource }}/{{ .Release.Name }}"
+    verb: GET
+    headers:
+    - 'Accept: application/json'
+  app:
+    template:
+      text: ${ .getComposition.spec.optimization // "Optimization request pending..." }
+{{- end }}

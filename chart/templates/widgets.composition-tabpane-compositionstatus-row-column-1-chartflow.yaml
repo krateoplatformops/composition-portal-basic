@@ -14,11 +14,6 @@ spec:
     - apiVersion: "v1"
       resource: "configmaps"
       name: "^composition-"
-  reference:
-    apiVersion: {{ .Values.global.compositionApiVersion }}
-    name: {{ .Release.Name }}
-    namespace: {{ .Release.Namespace }}
-    resource: {{ .Values.global.compositionResource }}
 ---
 apiVersion: templates.krateo.io/v1alpha1
 kind: Widget
