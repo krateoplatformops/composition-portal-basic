@@ -17,7 +17,7 @@ spec:
     namespace: {{ .Release.Namespace }}
   widgetsRefs:
   - apiVersion: templates.krateo.io/v1alpha1
-    name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-3-column-2-panel-paragraph
+    name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-3-column-2-panel-tabledata
     namespace: {{ .Release.Namespace }}
     resource: widgets
 {{- end }}
