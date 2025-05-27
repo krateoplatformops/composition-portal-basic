@@ -1,10 +1,22 @@
 {{- if .Values.finops.enabled }}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-3-column-2-panel-tabledata
+  namespace: {{ .Release.Namespace }}
+data:
+  pageSize: "10"
+  columns: "[{ \"key\": \"resourceid\", \"title\": \"Resource ID\"},{ \"key\": \"metricname\", \"title\": \"Metric Name\"},{\"key\": \"unit\", \"title\": \"Unit\"},{\"key\": \"optimizeFrom\", \"title\": \"Optimization Start (hh:mm) \"},{\"key\": \"optimizeTo\", \"title\": \"Optimization End (hh:mm)\"},{\"key\": \"resourceDelta\", \"title\": \"Optimize by (%)\"}]"    
+---
 apiVersion: templates.krateo.io/v1alpha1
 kind: Widget
 metadata:
-  name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-3-column-2-panel-paragraph
+  name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-3-column-2-panel-tabledata
 spec:
-  type: paragraph
+  type: tabledata
+  propsRef:
+    name: composition-aso-sample-tabpane-finops-panel-row-3-column-2-panel-paragraph
+    namespace: azure-pricing-system
   api:
   - name: getComposition
     path: "/apis/{{ .Values.global.compositionApiVersion }}/namespaces/{{ .Release.Namespace }}/{{ .Values.global.compositionResource }}/{{ .Release.Name }}"
@@ -13,5 +25,6 @@ spec:
     - 'Accept: application/json'
   app:
     template:
-      text: ${ .getComposition.spec.optimization // "Optimization request pending..." }
+      data: >
+        ${ [.getComposition.spec.optimization | fromjson | .[] | { resourceid: (.resourceid | split("/") | .[-1]), metricname: .metricname, unit: .unit, optimizeFrom: .optimization.from, resourceDelta: .optimization.resourceDelta, optimizeTo: .optimization.to  }] }
 {{- end }}
