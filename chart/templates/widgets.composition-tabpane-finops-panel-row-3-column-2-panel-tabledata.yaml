@@ -15,8 +15,8 @@ metadata:
 spec:
   type: tabledata
   propsRef:
-    name: composition-aso-sample-tabpane-finops-panel-row-3-column-2-panel-paragraph
-    namespace: azure-pricing-system
+    name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-3-column-2-panel-tabledata
+    namespace: {{ .Release.Namespace }}
   api:
   - name: getComposition
     path: "/apis/{{ .Values.global.compositionApiVersion }}/namespaces/{{ .Release.Namespace }}/{{ .Values.global.compositionResource }}/{{ .Release.Name }}"
