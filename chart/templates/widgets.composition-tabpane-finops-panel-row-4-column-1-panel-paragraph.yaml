@@ -7,5 +7,5 @@ spec:
   type: paragraph
   app:
     template:
-      text: "The resource utilization and the proposed optimization for the given resource."
+      text: "The resource utilization for the given resource."
 {{- end }}
