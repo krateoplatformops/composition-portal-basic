@@ -10,8 +10,8 @@ spec:
     name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-3-column-1
     namespace: {{ .Release.Namespace }}
     resource: collections
-  - apiVersion: templates.krateo.io/v1alpha1
-    name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-3-column-2
-    namespace: {{ .Release.Namespace }}
-    resource: collections
+  # - apiVersion: templates.krateo.io/v1alpha1
+  #   name: composition-{{ .Release.Name }}-tabpane-finops-panel-row-3-column-2
+  #   namespace: {{ .Release.Namespace }}
+  #   resource: collections
 {{- end }}
