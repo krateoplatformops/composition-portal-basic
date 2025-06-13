@@ -13,7 +13,7 @@ spec:
       resource: "widgets"
     - apiVersion: "v1"
       resource: "configmaps"
-      name: "^composition-"
+      name: "^composition-.+"
 ---
 apiVersion: templates.krateo.io/v1alpha1
 kind: Widget
